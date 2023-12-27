@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <!-- <link href="style.css" rel="stylesheet" type="text/css"> -->
+    <title>Title list</title>
+    <style>
+        form {
+            border: 2px solid gray;
+            padding: 20px 20px 20px 20px;
+        };
+    </style>
+</head>
+
+<body>
+    <h1>Superhero Form</h1>
+    <form action = '/sent' method= "post" id="signup">
+        <fieldset>
+            <legend>About the Superhero</legend>
+            <p>
+                <label>Real Name
+                    <input id="name" name="name" type="text" placeholder="Superhero real name" autofocus>
+                </label>
+
+                <label>Superhero name
+                    <input id="alias" name="alias" type="text" placeholder="Superhero alias">
+                </label>
+
+                <label>Age
+                    <input id="age" name="age" type="number">
+                </label>
+                <br>
+                <br>
+
+                <label>About
+                    <textarea cols="70" rows="5" maxlength="500" name="description"
+                        placeholder="Information about the superhero, max 500 symbols"></textarea>
+                </label>
+                <br>
+                <br>
+
+                <label>Photo:
+                    <input type="file"  id = "photo" name="photo" multiple>
+                </label>
+                <br>
+            </p>
+        </fieldset>
+        <fieldset>
+            <legend>Power</legend>
+            <p>
+                <label>
+                    <input type="checkbox" id = "expirience" name="expirience">
+                    Telekinesis
+                </label>
+
+                <label>
+                    <input type="checkbox" id = "expirience" name="expirience">
+                    Super strength or speed
+                </label>
+
+                <label>
+                    <input type="checkbox" id = "expirience" name="expirience">
+                    Shapeshifting
+                </label>
+
+                <label>
+                    <input type="checkbox" id = "expirience" name="expirience">
+                    Flight
+                </label>
+
+                <label>
+                    <input type="checkbox" id = "expirience" name="expirience">
+                    Elemental control
+                </label>
+
+                <label>
+                    <input type="checkbox" id = "expirience" name="expirience">
+                    Other
+                </label>
+                <br>
+                <br>
+                <label>Level of control
+                    <input type="range" id = "level" name="level" min="0" max="10" step="1" value="1">
+                </label>
+            </p>
+        </fieldset>
+        <fieldset>
+            <legend>Origin of Powers</legend>
+            <p>
+                <input type="radio" value="unknown" id = "purpose" name="purpose">
+                <label>Unknown</label>
+                <input type="radio" value="freak" id = "purpose" name="purpose">
+                <label>Freak lab accident</label>
+                <input type="radio" value="chosen" id = "purpose" name="purpose">
+                <label>Chosen by an ancient wise being</label>
+                <input type="radio" value="isNotHuman" id = "purpose" name="purpose">
+                <label>The superhero is not human</label>
+                <input type="radio" value="other" id = "purpose" name="purpose">
+                <label>Other</label>
+            <p>
+        </fieldset><br>
+        <button class = "button" type="reset">Clear</button>
+        <button class = "button" type="submit">Send</button>
+    </form>
+    <!-- <script>
+        var checkedBoxes = document.querySelectorAll('input[name=expirience]:checked').length;
+        
+        fetch('/sent', {
+            method: 'POST',
+            body: JSON.stringify(checkedBoxes)
+        })
+        .then((response) => {
+            return response.json();
+        })
+        .then((data) => {
+            console.log(data);
+        });
+    </script> -->
+</body>
+
+</html>

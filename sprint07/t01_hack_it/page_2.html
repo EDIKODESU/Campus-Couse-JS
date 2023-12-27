@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Title list</title>
+</head>
+<body>
+    <h1>Password</h1>
+    <form action = '/sent2' method= "post" id="signup">
+        <p>Password save of session</p>
+        <p id="dat" style = 'display: none; color: red;'> Access denied!</p> 
+        <p id="hash"> </p> 
+        <p>
+            <label>Password for saving of session
+                <input id="Password" name="Password" type="text" placeholder="Password to session">
+                <button class = "button" type="submit" onclick="myFunction()">Send</button>
+            </label>
+        </p>
+        <button class = "button" type="reset">Clear</button>
+    </form>
+    <script> 
+        async function myFunction() {
+         const res = fetch('/check1').then((e) => {
+                const ok = e.json().then((data )=>{
+                    if(data.cheked){
+                    let text = document.querySelector('#dat');
+                    text.style.display = 'block';
+                    }
+                });
+            });
+        }     
+        async function DataH(){
+            const res = await fetch('/data');
+            const hash_data = await res.json();
+            let resultString = '';
+            // resultString = hash_data.hash;
+            
+            resultString ="Hash is " +  hash_data['hash'];
+            document.getElementById('hash').innerHTML = resultString;
+        }
+        DataH();    
+
+    </script>
+</body>
+
+</html>

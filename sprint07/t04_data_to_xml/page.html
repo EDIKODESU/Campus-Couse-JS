@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Data to XML</title>
+        <style>
+            table td {
+                width: 50%;
+                border: 3px solid grey;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Avenger Quote to XML</h1>
+        <table>
+            <tr>
+                <td>
+                    <h3>TO XML</h3>
+                </td>
+                <td>
+                    <h3>FROM XML</h3>
+                </td>
+            </tr>
+            <tr>
+                <td id="to"> </td>
+                <td id="from"></td>
+            </tr>
+        </table>
+
+        <script>
+            async function printXML(){
+                const res = await fetch('/XML', {method: 'get', headers: {'Content-Type' : 'application/json'}});
+                const data_xml = await res.json();
+                document.querySelector('#to').innerText = data_xml.to;
+                document.querySelector('#from').innerText = data_xml.from;
+            }
+            printXML();
+        </script>
+    </body>
+</html>

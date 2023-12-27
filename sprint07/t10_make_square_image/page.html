@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <link href="style.css" rel="stylesheet" type="text/css">
+    <title>Title list</title>
+</head>
+
+<body>
+    <h1>Make square image</h1>
+    <form>
+        <input id="url" name="url" type="search" ></input>
+        <button class = "button" type="reset" onclick="get_url()" >Go</button>
+        <br><br><br>
+        <div id="table"></div>
+    </form>    
+    <script>
+         async function get_url(){
+            let data_url = {};
+            let result = '';
+            data_url.link = document.getElementById('url').value;
+            const res = await fetch('/send', {method: 'post', body: JSON.stringify(data_url), headers: {'Content-Type' : 'application/json'}});
+            const data = await res.json();
+            document.getElementById('table').innerHTML = data.str;
+        }
+    </script>
+</body>
+
+</html>

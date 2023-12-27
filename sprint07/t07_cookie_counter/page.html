@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <!-- <link href="style.css" rel="stylesheet" type="text/css"> -->
+    <title>Title list</title>
+</head>
+
+<body>
+    <h1>Cookie counter</h1>
+    <div id="text"></div>
+
+    <script>
+
+        let count;
+        let str = '';
+        if(document.cookie){
+            count = Number(document.cookie.slice(6));
+            count++;
+            console.log(document.cookie);
+        }
+        else{
+            count = 1;
+        }
+        document.cookie = `count=${count}; max-age=60;`;
+        str = `This page was loaded ${count} time(s) in last minute`
+        document.getElementById('text').innerHTML += str;
+    </script>
+</body>
+
+</html>

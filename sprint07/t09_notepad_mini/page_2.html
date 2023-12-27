@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Title list</title>
+    <style>
+        form {
+            padding: 20px 20px 20px 20px;
+        };
+    </style>
+</head>
+
+<body>
+    <h1>Notepad mini</h1>
+    <form id="signup">
+        <p>
+            <input id="name" name="name" type="text" placeholder="Name" autofocus>
+            <br>
+            <br>
+            <select name="important" id="important">
+                <option selected value="low">low</option>
+                <option value="medium">medium</option>
+                <option value="high">high</option>
+            </select>
+            <br>
+            <br>
+                <textarea cols="27" rows="3" maxlength="500" id="description" name="description" placeholder="Text of note..."></textarea>
+            <br>
+            <br>
+            <button class = "button" type="reset" onclick="CreateFile()" >Create</button>
+        </p>
+            <h3>list of notes:</h3>
+            <div id="list"></div>
+            <h3 id="File_name"></h3>
+            <p id="File_data"> </p>
+            <br>
+            <!-- <button class = "button" type="button" onclick="Delete_file()" >Delete</button> -->
+    </form>
+    <script>
+        async function CreateFile(){
+            let data = {};
+             let arr = [];
+             let str_arr = '';
+
+             var option = document.getElementById("important").selectedOptions;
+                for (let i = 0; i < option.length; i++) {
+                arr[i] = option[i].value;
+            }
+            data.important = arr.join('');
+            data.now = formatDate(new Date());
+            data.name = document.getElementById('name').value;
+            data.text = document.getElementById('description').value;
+
+            const res = await fetch('/send', {method: 'post', body: JSON.stringify(data), headers: {'Content-Type' : 'application/json'}});
+            const display_h = await res.json();
+            let resulthtml = display_h.html;
+            document.getElementById('list').innerHTML = resulthtml;
+
+        }
+        function padTo2Digits(num) {
+            return num.toString().padStart(2, '0');
+        }
+
+        function formatDate(date) {
+            return (
+            [
+                date.getFullYear(),
+                padTo2Digits(date.getMonth() + 1),
+                padTo2Digits(date.getDate()),
+            ].join('-') +
+            ' ' +
+            [
+                padTo2Digits(date.getHours()),
+                padTo2Digits(date.getMinutes()),
+                padTo2Digits(date.getSeconds()),
+            ].join(':')
+            );
+        }                 
+        async function Print_data(){
+            let data = {};
+            data.name = document.getElementById('name').value;
+            data.content = document.getElementById('description').value;
+
+            const res = await fetch('/pdata', {method: 'post', body: JSON.stringify(data), headers: {'Content-Type' : 'application/json'}});
+            const display_h = await res.json();
+            let r_file = display_h.text;
+            let name_f = display_h.name;
+            let f_select = display_h.important;
+            let f_data = display_h.date;
+            let result_name = 'Detail of "' + name_f + '"';
+            let ren = '';
+            ren += '<ul>';
+            ren += '<li>date: '+ f_data+'</li>'
+            ren += '<li>name: '+ name_f +'</li>'
+            ren += '<li>important: '+ f_select +'</li>'
+            ren += '<li>text: '+ r_file +'</li>'
+            ren += '</ul>';
+            document.getElementById('File_name').innerHTML = result_name;
+            document.getElementById('File_data').innerHTML = ren;
+        }
+        Print_data();
+
+        async function get_HTML_list(){
+            const res = await fetch('/page.html', {method: 'get', headers: {'Content-Type' : 'application/json'}});
+            const display = await res.json();
+            let resulthtml = display.html;
+            document.getElementById('list').innerHTML = resulthtml;
+        }
+        get_HTML_list();
+    </script>
+</body>
+
+</html>

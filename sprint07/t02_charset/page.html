@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Title list</title>
+</head>
+<body>
+    <h1>Charset</h1>
+    <form id="signup">
+        <p>
+            <label>Change charset:
+                <input id="string" name="string" type="text" placeholder="input string">
+            </label>
+            <br> <br> <br> 
+            <label>Select charset or several charsets:
+                <select id="conversion" name="conversion" multiple>
+                    <option value="utf">UTF-8</option>
+                    <option value="iso">ISO-8859-1</option>
+                    <option value="win">Windows-1252</option>
+                  </select>
+                  <button name="button" type="button" onclick="myFunction()">Change charset</button>
+                  <button name="button" onclick="myFunction_2()">Clear</button>
+            </label>
+        </p>
+        <p id="name"></p>
+    </form>
+    <script>
+         async function myFunction() {
+             let data = {};
+             let arr = [];
+             data.string = document.getElementById('string').value;
+
+             var option = document.getElementById("conversion").selectedOptions;
+            for (let i = 0; i < option.length; i++) {
+                arr[i] = option[i].value;
+                // data.conversion.push(x.options[i].value);
+            }
+            data.conversion = arr;
+
+            const res = await fetch('/sent', {method: 'post', body: JSON.stringify(data), headers: {'Content-Type' : 'application/json'}});
+            const convdata = await res.json();
+            // console.log(convdata);
+            let resultString = '';
+            for(let i = 0; i < convdata.name.length; i++){
+                if(convdata.name[i] == 'utf'){
+                    resultString += convdata.name[i] + ': ' + '<textarea>' + convdata.text.utf + '</textarea>'  + '<br>';
+                    // document.getElementById('name').innerHTML += resultString;
+                    
+                }    
+                else if(convdata.name[i] == 'iso'){
+                    resultString += convdata.name[i] + ': ' + '<textarea>' + convdata.text.iso + '</textarea>' + '<br>';   
+                    // document.getElementById('name').innerHTML += resultString;
+                }    
+                else if(convdata.name[i] == 'win'){
+                    resultString += convdata.name[i] + ': ' + '<textarea>' + convdata.text.win + '</textarea>' + '<br>';  
+                    // document.getElementById('name').innerHTML += resultString;
+                }       
+            }
+            
+            document.getElementById('name').innerHTML += resultString;
+        }     
+        async function myFunction_2() {
+            const res = await fetch('/clear');
+            document.location = res.url;
+            
+        }     
+    </script>
+</body>
+
+</html>

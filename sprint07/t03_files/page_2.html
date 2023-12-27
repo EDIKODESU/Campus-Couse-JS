@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Title list</title>
+    <style>
+        form {
+            border: 2px solid gray;
+            padding: 20px 20px 20px 20px;
+        };
+    </style>
+</head>
+
+<body>
+    <h1>File manager</h1>
+    <form id="signup">
+        <fieldset>
+            <p>
+                <h3>Create a file</h3>
+                <label>FileName
+                    <input id="name" name="name" type="text" autofocus>
+                </label>
+                <br>
+                <br>
+                <label>Container
+                    <textarea cols="70" rows="5" maxlength="500" id="description" name="description"></textarea>
+                </label>
+                <br>
+                <br>
+                <button class = "button" type="reset" onclick="Crete_file()" >Send</button>
+            </p>
+        </fieldset>
+        <fieldset>
+            <h3>Files:</h3>
+            <div id="list"></div>
+        </fieldset>
+        <fieldset>
+            <h3>Selected file:</h3>
+            <h3 id="File_name"> </h3>
+            <p>Content:</p>
+            <div id="content"> </div>
+            <br>
+            <button class = "button" type="button" onclick="Delete_file()" >Delete</button>
+        </fieldset>
+    </form>
+    <script>
+        async function Crete_file(){
+            let data = {};
+            data.name = document.getElementById('name').value;
+            data.content = document.getElementById('description').value;
+
+            const res = await fetch('/send', {method: 'post', body: JSON.stringify(data), headers: {'Content-Type' : 'application/json'}});
+            const display_h = await res.json();
+            let resulthtml = display_h.html;
+            document.getElementById('list').innerHTML = resulthtml;
+
+        }
+        async function Delete_file(){
+            const res = await fetch('/f_delete', {method: 'post',  headers: {'Content-Type' : 'application/json'}});
+            document.location = res.url;
+            // const display_h = await res.json();
+        }        
+        async function Print_data(){
+            let data = {};
+            data.name = document.getElementById('name').value;
+            data.content = document.getElementById('description').value;
+
+            const res = await fetch('/pdata', {method: 'post', body: JSON.stringify(data), headers: {'Content-Type' : 'application/json'}});
+            const display_h = await res.json();
+            let r_file = display_h.read;
+            let name_f = display_h.name;
+            document.getElementById('content').innerHTML = r_file;
+            document.getElementById('File_name').innerHTML = name_f;
+        }
+        Print_data();
+
+        async function get_HTML_list(){
+            const res = await fetch('/page.html', {method: 'get', headers: {'Content-Type' : 'application/json'}});
+            const display = await res.json();
+            let resulthtml = display.html;
+            document.getElementById('list').innerHTML = resulthtml;
+        }
+        get_HTML_list();
+
+
+    </script>
+</body>
+
+</html>

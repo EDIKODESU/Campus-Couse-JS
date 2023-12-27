@@ -1,0 +1,27 @@
+h1{
+   color: rgb(233, 233, 233);
+}
+body{
+    background-color: rgb(41, 41, 56);
+    /* border: 1px solid rgb(162, 68, 68); */
+    
+}
+
+.key{
+    color: rgb(39, 212, 42);
+}
+
+.box{
+    background-color: rgb(73, 55, 46);
+    border: 1px solid rgb(238, 214, 214);
+    padding: 10px;
+    width: 100%;
+}
+
+.box .box {
+    width: auto;
+}
+
+b{
+    color: rgb(61, 191, 184);
+}

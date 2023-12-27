@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <!-- <link href="style.css" rel="stylesheet" type="text/css"> -->
+    <title>Title list</title>
+    <style>
+        form {
+            border: 2px solid gray;
+            padding: 20px 20px 20px 20px;
+        };
+    </style>
+</head>
+
+<body>
+    <h1>Show other sites</h1>
+    <p>
+    url
+    <input id="url" name="url" type="search" ></input>
+    <button class = "button" type="button" onclick="get_web()" >GO</button>
+    <a onclick="back()" style="cursor: pointer;">BACK</a>
+    </p>
+    <textarea id="name" name="name" type="text" style="width: 95%; display: none;"></textarea>
+    <p id="text">Type at URL...</p>
+    <div>
+        <pre id="body"></pre>
+    </div>
+
+    <script>
+         async function back(){
+            const res = await fetch('/back', {method: 'post',  headers: {'Content-Type' : 'application/json'}});
+            document.location = res.url;
+            // const display_h = await res.json();
+        }  
+        async function get_web(){
+            let data_url = {};
+            data_url.link = document.getElementById('url').value;
+            const res = await fetch('/send', {method: 'post', body: JSON.stringify(data_url), headers: {'Content-Type' : 'application/json'}});
+            const data = await res.json();
+            let resultString = data.url;
+            document.getElementById('name').innerHTML += resultString;
+            let text = document.querySelector('#name');
+            let text_url = document.querySelector('#text');
+            text_url.style.display = 'none';
+            text.style.display = 'block';
+            document.getElementById('body').innerHTML = data.html;
+        }
+    </script>
+</body>
+
+</html>

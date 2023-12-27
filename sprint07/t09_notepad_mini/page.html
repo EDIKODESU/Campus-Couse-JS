@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <!-- <link href="style.css" rel="stylesheet" type="text/css"> -->
+    <title>Title list</title>
+    <style>
+        form {
+            padding: 20px 20px 20px 20px;
+        };
+    </style>
+</head>
+
+<body>
+    <h1>Notepad mini</h1>
+    <form id="signup">
+            <p>
+                <input id="name" name="name" type="text" placeholder="Name" autofocus>
+                <br>
+                <br>
+                <select name="important" id="important">
+                    <option selected value="low">low</option>
+                    <option value="medium">medium</option>
+                    <option value="high">high</option>
+                </select>
+                <br>
+                <br>
+                    <textarea cols="27" rows="3" maxlength="500" id="description" name="description" placeholder="Text of note..."></textarea>
+                <br>
+                <br>
+                <button class = "button" type="reset" onclick="CreateFile()" >Create</button>
+            </p>
+            <h3>list of notes:</h3>
+            <div id="list"></div>
+    </form>
+    <script>
+        async function CreateFile(){
+            let data = {};
+             let arr = [];
+             let str_arr = '';
+
+             var option = document.getElementById("important").selectedOptions;
+                for (let i = 0; i < option.length; i++) {
+                arr[i] = option[i].value;
+            }
+            data.now = formatDate(new Date());
+            data.important = arr.join('');
+
+            data.name = document.getElementById('name').value;
+            data.text = document.getElementById('description').value;
+
+            const res = await fetch('/send', {method: 'post', body: JSON.stringify(data), headers: {'Content-Type' : 'application/json'}});
+            const display_h = await res.json();
+            let resulthtml = display_h.html;
+            document.getElementById('list').innerHTML = resulthtml;
+
+        }    
+        async function get_HTML_list(){
+            const res = await fetch('/page.html', {method: 'get', headers: {'Content-Type' : 'application/json'}});
+            const display = await res.json();
+            let resulthtml = display.html;
+            document.getElementById('list').innerHTML = resulthtml;
+        }
+        get_HTML_list();
+
+        function padTo2Digits(num) {
+            return num.toString().padStart(2, '0');
+        }
+
+        function formatDate(date) {
+            return (
+            [
+                date.getFullYear(),
+                padTo2Digits(date.getMonth() + 1),
+                padTo2Digits(date.getDate()),
+            ].join('-') +
+            ' ' +
+            [
+                padTo2Digits(date.getHours()),
+                padTo2Digits(date.getMinutes()),
+                padTo2Digits(date.getSeconds()),
+            ].join(':')
+            );
+        }         
+    </script>
+</body>
+
+</html>

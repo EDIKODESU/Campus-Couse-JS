@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <link href="style.css" rel="stylesheet" type="text/css">
+    <title>Title list</title>
+</head>
+
+<body>
+    <h1>Comics from Marvel API</h1>
+    <div id="text" class="divv"></div>
+
+    <script>
+        async function get_web(){
+            const res = await fetch('/send', {method: 'post', headers: {'Content-Type' : 'application/json'}});
+            const data = await res.json();
+            document.getElementById('text').innerHTML += get_html(data);
+        }
+        get_web();
+
+        function get_html(data){
+            let resultString = '';
+            for(let key in data) {
+                if(typeof data[key]  === "object") {
+                    resultString += `<div class="box"><b class="key">${key}</b>: ${get_html(data[key])}</div>`;
+                } else {
+                    resultString += `<div class="box"><b>${key}</b>: ${data[key]}</div>`;
+                }
+            }
+            return resultString;
+        }
+
+    </script>
+</body>
+
+</html>
