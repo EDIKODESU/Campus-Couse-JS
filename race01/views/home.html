@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <title>Profile</title>
+</head>
+<body>
+    <h1 class="form-title">Profile</h1>
+    <p class="form-title" id="log">Login: </p>
+    <p class="form-title" id="fn">Full Name: </p>
+    <p class="form-title" id="em">Email: </p>
+    <button id="play" type="submit" value="LOG OUT">Play</button><br>
+    <button id="regButton" type="submit" value="LOG OUT">Log Out</button>
+    <span id="timer_bl">01:00</span>
+    <p id="err_msg"></p>
+
+    <script>
+
+        
+
+        let request = new XMLHttpRequest()
+        
+        request.open('POST', '/', true);
+        
+        request.setRequestHeader( 'Content-Type', 'application/json');
+        let login_my;
+        request.addEventListener('load', function () {
+            let receivedUser = JSON.parse(request.response);
+            if (receivedUser.ans == "YESlogin") {
+                window.location.href = '/login';
+            }
+            else {
+                //console.log(receivedUser);
+                login_my = receivedUser.login;
+                document.getElementById('log').innerText = `Login: ${receivedUser.login}`;
+                document.getElementById('fn').innerText = `Full Name: ${receivedUser.fullName}`;
+                document.getElementById('em').innerText = `Email: ${receivedUser.email}`;
+
+            }
+        });
+           
+        request.send();
+
+        // const socket = io.connect();
+        // console.log(socket);
+        // console.log(io);
+        // socket.emit("create", socket);
+
+
+        // var id_client;
+        // socket.on("new player", function (data) {
+        //     id_client = data.id;
+        //     socket.emit("new player", {id: id_client, login: login_my, wait_game: false});
+        //     console.log(id_client);
+        // });
+
+        let logoutButton = document.getElementById('regButton');
+        logoutButton.addEventListener('click', function (evt) {
+    
+            evt.preventDefault();
+            
+
+            let request = new XMLHttpRequest()
+
+            request.open('POST', '/logout', true);
+            
+            request.setRequestHeader( 'Content-Type', 'application/json');
+            
+            request.addEventListener('load', function () {
+                let receivedUser = JSON.parse(request.response);
+                if(receivedUser.ans = "logout") {
+                    window.location.href = '/login';
+                }
+            });
+                
+            request.send();
+
+        });
+
+
+        let amount_time = 60;
+        var time = setInterval(function () {
+            let para = document.getElementById('timer_bl');
+            amount_time = amount_time - 1;
+            if (amount_time < 10) {
+                para.innerHTML = `00:0${amount_time}`;
+            }
+            else {
+                para.innerHTML = `00:${amount_time}`;
+            }            
+        }, 1000);
+
+        let play = document.getElementById('play');
+        var timer_bl = document.getElementById('timer_bl');
+        play.addEventListener('click', function (evt) {
+            console.log("CLick_play");
+            play.style.background = `rgb(255, 90, 90)`;
+            play.style.color = `black`;
+            timer_bl.style.opacity = `1`;
+            timer_bl.style.visibility = `visible`;
+            amount_time = 60;
+            // var indicator_game = false;
+            // socket.emit("play_game", {id: id_client, wait_game: true});
+            // socket.emit("find_game", {id: id_client});
+            // socket.on("find_game", function (data) {
+            //     indicator_game = data.msg;
+            // });
+            
+            // socket.emit("new", {id: id_client,});
+            
+            evt.preventDefault();
+            
+            let request = new XMLHttpRequest();
+
+            request.open('POST', '/logout', true);
+            
+            request.setRequestHeader( 'Content-Type', 'application/json');
+            // while(true) {
+            //     if (amount_time == 0) {
+            //         break;
+            //     }
+            //     socket.on('find_player', function(ind) {
+            //         console.log(ind);
+            //         indicator_game = ind;
+            //     });
+            //     if (indicator_game == true){
+            //         break;
+            //     }
+            // }
+            // if (indicator_game == true) {
+            request.addEventListener('load', function () {
+                let receivedUser = JSON.parse(request.response);
+                if(receivedUser.ans = "logout") {
+                    window.location.href = '/playgame';
+                }
+            });
+            request.send();
+            // }
+            // else {
+                // let pr = document.getElementById('err_msg');
+                // pr.innerHTML = "Not find player!!!";
+            // }
+            // request.addEventListener('load', function () {
+            //     let receivedUser = JSON.parse(request.response);
+            //     if(receivedUser.ans = "logout") {
+            //         window.location.href = '/playgame';
+            //     }
+            // });
+                
+            
+
+        });
+    </script>
+</body>
+</html>

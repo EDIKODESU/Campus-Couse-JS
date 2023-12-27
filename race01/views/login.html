@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <title>Форма регистрации</title>
+</head>
+
+<body>
+    <form name="regForm" action="/login" method="post">
+        <main>
+            <div class="register-form-container">
+                <h1 class="form-title">Sign UP</h1>
+                <div class="form-fields">
+                    <div class="form-field">
+                        <input type="text" name="login" placeholder="Login" required>
+                    </div>
+                    <div class="form-field">
+                        <input type="password" name="pass" placeholder="Password" id="password" required>
+                    </div>
+                </div>
+                <div class="form-buttons">
+                    <button class="button" id="regButton" type="submit" name="signup_submit">Sign Up</button><br>
+                </div>
+                <span id="error" style="color: red;"></span>
+                <a href="/reg">Create a new account</a><br>
+                <a href="/password">Reminder Password</a>
+            </div>
+        </main>
+    </form>
+
+    <script>
+        let subButton = document.getElementById('regButton');
+        let request = new XMLHttpRequest()
+        
+        
+        request.open('POST', '/check', true);
+        request.setRequestHeader( 'Content-Type', 'application/json');
+        
+        request.addEventListener('load', function () {
+            let receivedUser = JSON.parse(request.response);
+            if (receivedUser.ans == "Falselogin") {
+                window.location.href = '/';
+            }
+        });
+
+        request.send();
+
+
+        subButton.addEventListener('click', function (evt) {
+    
+            evt.preventDefault();
+            
+            let regForm = document.forms['regForm'];
+
+            let login = regForm.elements['login'].value;
+            let pass = regForm.elements['pass'].value;
+            let user = JSON.stringify({
+                login: login,
+                pass: pass,
+            });
+        
+            let request = new XMLHttpRequest()
+        
+            request.open('POST', '/login', true);
+            
+            request.setRequestHeader( 'Content-Type', 'application/json');
+            
+            request.addEventListener('load', function () {
+                let receivedUser = JSON.parse(request.response);
+                
+                if(receivedUser.ans == 'OK') {
+                    console.log(receivedUser.ans); 
+                    window.location.href = '/';
+                }
+                else {
+                    document.getElementById('error').innerText = receivedUser.ans;
+                }
+
+            });
+                
+            request.send(user);
+        
+        });
+    </script>
+</body>
+
+</html>

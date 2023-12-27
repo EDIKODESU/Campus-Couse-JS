@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <title>Game</title>
+</head>
+
+<body>
+    <div class="place">
+        <div id="mydiv" class="game_place">
+            <div class="block">
+                <div id="fight" class="block_fight"> </div>
+                <div class="block_enemyPlace" id="enemy_fight"> </div>
+                <div class="block_DeckCards">
+                    <div class="block_amount_DeckCards"><span id="amount_DeckCards">0/32</span></div>  
+                </div>
+                <div class="block_DeckCardsEnemy">
+                    <div class="block_amount_DeckCardsEnemy"><span id="amount_DeckCardsEnemy">0/32</span></div>  
+                </div>
+                <div class="block_info">
+                    <div class="Mana">
+                        <span id="amount_Mana">10/10</span>
+                    </div>
+                    <div class="MyName">
+                        <span id="my_login">none</span>
+                    </div>
+                </div>
+                <div class="block_info_enemy">
+                    <div class="EnemyName">
+                        <span id="enemy_login">Enemy</span>
+                    </div>
+                </div>
+                <div class="button_next_step" onclick="NextStroke()"><span>End of Stroke</span></div>
+                <div class="score_my"><span id="score_my">0</span></div>
+                <div class="score_enemy"><span id="score_enemy">0</span></div>
+                <!-- <div class="amount_Cards"><span id="amount_Cards">5</span></div> -->
+                <div class="error_game_message"><span id="err_gameMess"></span></div>
+                <div class="button_menu" onclick="openMenu()"><span>Menu</span></div>
+                <div class="timer_block"><span id="timer">01:00</span></div>
+                <div class="stroke_block"><span id="stroke">You walk</span></div>
+            </div>
+            <div class="card_block">
+                <div class="allCards" id="allCards"></div>
+            </div>
+           
+            <!-- <div id="mydivheader" class="card"></div>
+            <div id="mydivheader1" class="card"></div>
+            <div id="mydivheader2" class="card"></div>
+            <div id="mydivheader3" class="card"></div> -->
+        </div>
+        <div class="waiting_next_stroke">
+        </div>
+        <div class="menu_block">
+            <div class="menu">
+                <h1>Menu</h1>
+                <div class="butt_continue" onclick="Continue()"><span>Continue</span></div>
+                <div class="butt_exit" onclick="Exit()"><span>Exit</span></div>
+            </div>
+        </div>
+        <div class="win"><span>You win!!!</span></div>
+        <div class="lose"><span>You Lose(@_@)</span></div>
+    </div>
+    <script>
+/////////////////////////////////
+
+        // console.log(id_client);
+        // socket.emit('new_game', {id: id_client});
+        // socket.on('find_game', function (data) {
+        //     console.log(data);
+        //     socket.emit('new_game', {id: socket.id});
+        // });
+
+        
+
+        let request = new XMLHttpRequest()
+        let login_my;
+        request.open('POST', '/playgame', true);
+        request.setRequestHeader( 'Content-Type', 'application/json');
+        request.onload = function () {
+            let userInfo = JSON.parse(request.response);
+            login_my = userInfo.login;
+            console.log(JSON.parse(request.response));
+            if (userInfo.ans === 'YesLogin') {
+                window.location.href = '/login';
+            }
+            else if (userInfo.ans === 'NoLogin') {
+                document.getElementById('my_login').innerHTML = `${userInfo.login}`;
+            }
+            // console.log(JSON.parse(request.response));
+        };
+        request.send();
+
+        var arr_cards = [
+            {url: 'card1.png', power:9, protection: 6, mana: 6 },
+            {url: 'card2.png', power:10, protection: 9, mana: 8 },
+            {url: 'card3.png', power:12, protection: 10, mana: 9 },
+            {url: 'card4.png', power:20, protection: 12, mana: 9 },
+            {url: 'card5.png', power:14, protection: 10, mana: 9 },
+            {url: 'card6.png', power:8, protection: 12, mana: 5 },
+            {url: 'card7.png', power:9, protection: 12, mana: 7 },
+            {url: 'card8.png', power:8, protection: 8, mana: 5 },
+            {url: 'card9.png', power:7, protection: 6, mana: 4 },
+            {url: 'card10.png', power:9, protection: 9, mana: 8 },
+            {url: 'card11.png', power:8, protection: 7, mana: 6 },
+            {url: 'card12.png', power:8, protection: 5, mana: 5 },
+            {url: 'card13.png', power:7, protection: 7, mana: 6 },
+            {url: 'card14.png', power:6, protection: 8, mana: 5 },
+            {url: 'card15.png', power:6, protection: 6, mana: 4 },
+            {url: 'card16.png', power:12, protection: 10, mana: 9 },
+            {url: 'card17.png', power:6, protection: 4, mana: 3 },
+            {url: 'card18.png', power:8, protection: 8, mana: 6 },
+            {url: 'card19.png', power:8, protection: 9, mana: 7 },
+            {url: 'card20.png', power:7, protection: 9, mana: 6 },
+            {url: 'card21.png', power:9, protection: 9, mana: 7 },
+            {url: 'card22.png', power:10, protection: 9, mana: 9 },
+            {url: 'card23.png', power:9, protection: 6, mana: 7 },
+            {url: 'card24.png', power:11, protection: 10, mana: 8 },
+            {url: 'card25.png', power:0, protection: 0, mana: 9 },
+            {url: 'card25.png', power:0, protection: 0, mana: 9 },
+            {url: 'card26.png', power:0, protection: 0, mana: 9 },
+            {url: 'card26.png', power:0, protection: 0, mana: 9 },
+            {url: 'card27.png', power:0, protection: 0, mana: 9 },
+            {url: 'card27.png', power:0, protection: 0, mana: 9 },
+            {url: 'card28.png', power:0, protection: 0, mana: 9 },
+            {url: 'card28.png', power:0, protection: 0, mana: 9 },
+        ];
+
+        
+
+////////////////////////////////
+        let amount_time = 60;
+
+        var time = setInterval(function () {
+            if (game_over == true) {
+                socket.emit("game_over", {id: id_client, score: score_my});
+            }
+            else {
+                if (amount_time == 0) {
+                    NextStroke();
+                }
+                let para = document.getElementById('timer');
+                amount_time = amount_time - 1;
+                if (amount_time < 10) {
+                    para.innerHTML = `00:0${amount_time}`;
+                }
+                else {
+                    para.innerHTML = `00:${amount_time}`;
+                }    
+            }  
+        }, 1000);
+
+        let mana = 10;
+        let allCards = 32;
+        // let Cards_in_Deck = 0;
+        let myCards = 0;
+        let score_my = 0;
+        let score_enemy = 0;
+        let numbCart = 0;
+        let Cards_in_Out = 0;
+        let Cards_in_Out_Enemy = 0;
+        let id_cards = 0;
+        let mana_card = 0;
+        let amount_power = 0;
+        var ArrayCards = [];
+        var ArrayCardsOnPlace = [];
+        var ArrayCardsOnPlaceEnemy = [];
+        let amount_cards_on_place = 0;
+        let amount_cards_on_place_enemy = 0;
+        let id_card_in_arr = 0;
+        var ArrayCardInDecks = [];
+        var ArrayCardInDecksEnemy = [];
+        let Cards_drops = 0;
+        let Cards_drops_enemy = 0;
+        let game_over = false;
+
+        
+        let indicator = false;
+
+        const socket = io();
+        
+        var id_client = '';
+        socket.on('new_player', function (data) {
+            id_client = data.id;
+            console.log(data.id);
+            socket.emit('new_game', {id: data.id, name: login_my});
+            // id_client = data.id;
+        });
+        socket.on('first_step', function (data) {
+            let modal = document.querySelector('.waiting_next_stroke');
+            let modal2 = document.querySelector('.timer_block');
+            let para = document.getElementById('stroke');
+            if (id_client != data.fs_id) {
+                modal.style.opacity = 1;
+                modal.style.visibility = 'visible';
+                para.innerHTML = 'Enemy walk';
+                modal2.style.background = 'rgb(212, 80, 80)';
+            }
+            socket.emit('name', {id: id_client, name: login_my});
+        });
+        socket.on('name', function(data) {
+           let para = document.getElementById('enemy_login');
+           para.innerHTML = `${data.name}`; 
+        });
+        socket.on('start_game', function(data) {
+            console.log(data);
+            // var div = document.createElement('div');
+            let card_now = arr_cards[data.id_c - 1];
+            var div = document.getElementById('enemy_fight');
+            div.innerHTML += `<div class="card" data-idarr=${data.id_c} data-number=${card_now.mana} data-power=${card_now.power} data-protection=${card_now.protection} id="2card${data.id_c}" draggable="false"><div class="mana_card">${card_now.mana}</div><div id="2card_power${data.id_c}" class="power_card">${card_now.power}</div></div>`;
+            Cards_drops_enemy++;
+            // div.innerHTML = `<div class="card" data-idarr=${data.id_c} data-number=${card_now.mana} data-power=${card_now.power} data-protection=${card_now.protection} id="2card${data.id_c}" draggable="false"><div class="mana_card">${card_now.mana}</div><div class="power_card">${card_now.power}</div></div>`;
+            // document.getElementById('enemy_fight').appendChild(div);
+            let elemcard = document.getElementById(`2card${data.id_c}`);
+            elemcard.style.backgroundImage = `url(${card_now.url})`;
+            elemcard.style.backgroundSize = '125px';
+            console.log(data.id_c);
+            let id_card_full = `2card${data.id_c}`;
+            if (id_card_full === "2card25" || id_card_full === "2card26") {
+                setTimeout(function () {
+                    document.getElementById(id_card_full).remove();
+                }, 2000);
+                Cards_in_Out_Enemy++;
+            } else if (id_card_full === "2card27" || id_card_full === "2card28") {
+                setTimeout(function () {
+                    document.getElementById(id_card_full).remove();
+                }, 2000);
+                Cards_in_Out_Enemy++;
+            } else if (id_card_full === "2card29" || id_card_full === "2card30") {
+                setTimeout(function () {
+                    document.getElementById(id_card_full).remove();
+                }, 2000);
+                Cards_in_Out_Enemy++;
+            } else if (id_card_full === "2card31" || id_card_full === "2card32") {
+                ArrayCardsOnPlaceEnemy.push(id_card_full);
+                // setTimeout(function () {
+                //     document.getElementById(`${data.id_c}`).remove();
+                // }, 2000);
+                // Cards_in_Out_Enemy++;
+            } else {
+                score_enemy = score_enemy + card_now.power;
+                ArrayCardsOnPlaceEnemy.push(id_card_full);
+                amount_cards_on_place_enemy++;
+                if(amount_cards_on_place_enemy == 6) {
+                    console.log('ArrayCardsOnPLaceEnemy');
+                    console.log(ArrayCardsOnPlaceEnemy);
+                    for (let i = 0; i < ArrayCardsOnPlaceEnemy.length; i++) {
+                        ArrayCardInDecksEnemy.push(document.getElementById(ArrayCardsOnPlaceEnemy[i]).getAttribute("data-idarr"));
+                        document.getElementById(ArrayCardsOnPlaceEnemy[i]).remove();
+                    }
+                    ArrayCardsOnPlaceEnemy.splice(0, ArrayCardsOnPlaceEnemy.length);
+                    Cards_in_Out_Enemy = Cards_in_Out_Enemy + 6;
+                    amount_cards_on_place_enemy = 0;
+                }
+            } 
+            Update_info();
+        });
+        socket.on('next_stroke_end', function(data) {
+            Update_info();
+            let modal = document.querySelector('.waiting_next_stroke');
+            let modal2 = document.querySelector('.timer_block');
+            let para2 = document.getElementById('stroke');
+            para2.innerHTML = 'You';
+            modal.style.opacity = 0;
+            modal.style.visibility = 'hidden';
+            modal2.style.background = 'rgb(80, 212, 120)';
+            amount_time = 60;
+        });
+
+        socket.on('execution', function (data) {
+            Update_info();
+            let indicator1 = false;
+            let i2 = 0;
+            for (let i = 0; i < ArrayCardsOnPlace.length; i++) {
+                if (ArrayCardsOnPlace[i] === "2card31" || ArrayCardsOnPlace[i] == "2card32") {
+                    indicator1 = true;
+                    i2 = i;
+                    break;
+                }
+            }
+            if (indicator1 === true) {
+                document.getElementById(ArrayCardsOnPlace[i2]).remove();
+                // setTimeout(function () {
+                //     document.getElementById(`2${data.id_card}`).remove();
+                // }, 2000);
+                Cards_in_Out++;
+            }
+            else {
+                let strongest_power = 0;
+                console.log('ArrayCardsOnPlace')
+                console.log(ArrayCardsOnPlace);
+                for (let i = 0; i < ArrayCardsOnPlace.length; i++) {
+                    let el = document.getElementById(ArrayCardsOnPlace[i]).getAttribute("data-idarr");
+                    let card = arr_cards[el - 1];
+                    if (card.power > strongest_power) {
+                        strongest_power = card.power;
+                    }
+                }
+                for (let i = 0; i < ArrayCardsOnPlace.length; i++) {
+                    let el = document.getElementById(ArrayCardsOnPlace[i]).getAttribute("data-idarr");
+                    let card = arr_cards[el - 1];
+                    if (card.power == strongest_power) {
+                        document.getElementById(ArrayCardsOnPlace[i]).remove();
+                        Cards_in_Out++;
+                        score_my = score_my - card.power;
+                    }
+                }
+                // setTimeout(function () {
+                //     document.getElementById(`2${data.id_card}`).remove();
+                // }, 2000);
+                Update_info();
+            }
+            
+        });
+
+        socket.on('gain', function (data) {
+            Update_info();
+            let strongest_power = 0;
+            for (let i = 0; i < ArrayCardsOnPlaceEnemy.length; i++) {
+                let el = document.getElementById(ArrayCardsOnPlaceEnemy[i]).getAttribute("data-idarr");
+                let card = arr_cards[el - 1];
+                if (card.power > strongest_power) {
+                    strongest_power = card.power;
+                }
+            }
+            for (let i = 0; i < ArrayCardsOnPlaceEnemy.length; i++) {
+                let el = document.getElementById(ArrayCardsOnPlaceEnemy[i]).getAttribute("data-idarr");
+                let card = arr_cards[el - 1];
+                console.log(`el: ${el}`);
+                if (card.power == strongest_power) {
+                    let num = card.power + card.power;
+                    let elem_el = `2card_power${el}`;
+                    document.getElementById(elem_el).innerHTML = num;
+                    score_enemy = score_enemy + card.power;
+                }
+            }
+        });
+
+        socket.on('resurrection', function (data) {
+            Update_info();
+            let card = arr_cards[data.id_card - 1];
+            let div = document.getElementById('enemy_fight');
+            div.innerHTML += `<div class="card" data-idarr=${data.id_card} data-number=${card.mana} data-power=${card.power} data-protection=${card.protection} id="2card${data.id_card}" draggable="false"><div class="mana_card">${card.mana}</div><div id="2card_power${data.id_card}" class="power_card">${card.power}</div></div>`;
+            let elemcard = document.getElementById(`2card${data.id_card}`);
+            elemcard.style.backgroundImage = `url(${card.url})`;
+            elemcard.style.backgroundSize = '125px';
+            score_enemy = score_enemy + card.power;
+            ArrayCardsOnPlaceEnemy.push(`2card${data.id_card}`);
+            amount_cards_on_place_enemy++;
+        });
+
+        socket.on('shield', function (data) {
+            Update_info();
+            console.log('Shield');
+        });
+
+        socket.on('win', function (data) {
+            let modal = document.querySelector('.win');
+            modal.style.opacity = 1;
+            modal.style.visibility = 'visible';
+        });
+
+        socket.on('lose', function (data) {
+            let modal = document.querySelector('.lose');
+            modal.style.opacity = 1;
+            modal.style.visibility = 'visible';
+        });
+
+        function card_execution(itemID) {
+            Update_info();
+            socket.emit('execution', {id: id_client, id_card: itemID});
+            let indicator1 = false;
+            let i2 = 0;
+            for (let i = 0; i < ArrayCardsOnPlaceEnemy.length; i++) {
+                if (ArrayCardsOnPlaceEnemy[i] === "2card31" || ArrayCardsOnPlaceEnemy[i] == "2card32") {
+                    indicator1 = true;
+                    i2 = i;
+                    break;
+                }
+            }
+            if (indicator1 === true) {
+                document.getElementById(ArrayCardsOnPlaceEnemy[i2]).remove();
+                Cards_in_Out_Enemy++;
+            }
+            else {
+                let strongest_power = 0;
+                for (let i = 0; i < ArrayCardsOnPlaceEnemy.length; i++) {
+                    let el = document.getElementById(ArrayCardsOnPlaceEnemy[i]).getAttribute("data-idarr");
+                    let card = arr_cards[el - 1];
+                    if (card.power > strongest_power) {
+                        strongest_power = card.power;
+                    }
+                }
+                for (let i = 0; i < ArrayCardsOnPlaceEnemy.length; i++) {
+                    let el = document.getElementById(ArrayCardsOnPlaceEnemy[i]).getAttribute("data-idarr");
+                    let card = arr_cards[el - 1];
+                    if (card.power == strongest_power) {
+                        document.getElementById(ArrayCardsOnPlaceEnemy[i]).remove();
+                        score_enemy = score_enemy - card.power;
+                    }
+                }
+            }
+        }
+
+        function card_gain() {
+            Update_info();
+            socket.emit('gain', {id: id_client, id_card: id_card_in_arr});
+            let strongest_power = 0;
+            for (let i = 0; i < ArrayCardsOnPlace.length; i++) {
+                let el = document.getElementById(ArrayCardsOnPlace[i]).getAttribute("data-idarr");
+                let card = arr_cards[el - 1];
+                if (card.power > strongest_power) {
+                    strongest_power = card.power;
+                }
+            }
+            for (let i = 0; i < ArrayCardsOnPlace.length; i++) {
+                let el = document.getElementById(ArrayCardsOnPlace[i]).getAttribute("data-idarr");
+                let card = arr_cards[el - 1];
+                if (card.power == strongest_power) {
+                    let num = card.power + card.power;
+                    document.getElementById(`card_power${el}`).innerHTML = `${num}`;
+                    score_my = score_my + card.power;
+                }
+            }
+        }
+
+        function card_resurrection() {
+            Update_info();
+            let num_card = getRandomNum(0, ArrayCardInDecks.length);
+            console.log(`Num_card = ${num_card}`);
+            let card = arr_cards[num_card - 1];
+            console.log(`Card = ${card}`);
+            var div1 = document.getElementById('fight');
+            div1.innerHTML += `<div class="card" data-idarr=${num_card} data-number=${card.mana} data-power=${card.power} data-protection=${card.protection} id="card${num_card}" draggable="false"><div class="mana_card">${card.mana}</div><div id="card_power${num_card}" class="power_card">${card.power}</div></div>`;
+            // console.log(num_card);
+            let text = `card${num_card}`;
+            let elemcard = document.getElementById(text);
+            elemcard.style.backgroundImage = `url(${card.url})`;
+            elemcard.style.backgroundSize = '125px';
+            score_my = score_my + card.power;
+            ArrayCardsOnPlace.push(`card${num_card}`);
+            amount_cards_on_place++;
+            socket.emit('resurrection', {id: id_client, id_card: num_card});
+        }
+
+        function card_shield() {
+            Update_info();
+            socket.emit('shield', {id: id_client, id_card: id_card_in_arr});
+        }
+
+        function Continue() {
+            let modal = document.querySelector('.menu_block');
+            modal.style.opacity = 0;
+            modal.style.visibility = 'hidden';
+        }
+        function Exit() {
+            window.location.href = '/';
+        }
+        function openMenu() {
+            let modal = document.querySelector('.menu_block');
+            modal.style.opacity = 1;
+            modal.style.visibility = 'visible';
+        }
+        function getRandomNum(min, max) {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min)) + min; //Максимум не включается, минимум включается
+        }
+
+        function Update_info() {
+            if (Cards_drops == 32 && Cards_drops_enemy == 32) {
+                game_over = true;
+            }
+            let amount_Mana = document.getElementById('amount_Mana');
+            let score_e = document.getElementById('score_enemy');
+            let score_m = document.getElementById('score_my');
+            // let num_card = document.getElementById('amount_Cards');
+            let num_outCards = document.getElementById('amount_DeckCards');
+            let num_outCardsEnemy = document.getElementById('amount_DeckCardsEnemy');
+            let err = document.getElementById('err_gameMess');
+            let timer = document.getElementById('timer');
+            let cards_on_place = 0;
+            score_e.innerHTML = `${score_enemy}`;
+            score_m.innerHTML = `${score_my}`;
+            amount_Mana.innerHTML = `${mana}/10`;
+            // num_card.innerHTML = `${numbCart}`;
+            num_outCards.innerHTML = `${Cards_in_Out}/32`;
+            num_outCardsEnemy.innerHTML = `${Cards_in_Out_Enemy}/32`;
+            err.innerHTML = ``;
+            if (indicator == true) {
+                timer.innerHTML = `01:00`;
+                amount_time = 60;
+                indicator = false;
+            }
+            // console.log(ArrayCards);
+            console.log(`numbCard: ${numbCart}`);
+            console.log(`myCards: ${myCards}`);
+            
+        }
+
+        async function NextStroke() {
+            if(mana != 10) {
+                mana++;
+            }
+            indicator = true;
+            Update_info();
+            const para = document.createElement("div");
+            console.log(`numbCard = ${numbCart}`);
+            console.log(`myCards = ${myCards}`);
+            if(numbCart < 5 && myCards < 32 && Cards_drops < 32) {
+                console.log("Input NextStroke()");
+                let rand_card_id = 0;
+                let ind = false;
+                while (true) {
+                    ind = false;
+                    rand_card_id = getRandomNum(1, 33);
+                    for (let j = 0; j < ArrayCards.length; j++) {
+                        if (rand_card_id == ArrayCards[j]) {
+                           ind = true;
+                           break;
+                        }
+                    }
+                    if (ind == false) {
+                        break;
+                    }
+                }
+                let card = arr_cards[rand_card_id - 1];
+                // let rand_num = getRandomNum(1,10);
+                // let rand_num_power = getRandomNum(1, 10);
+                id_cards = rand_card_id;
+                para.innerHTML += `<div class="card" data-idarr=${rand_card_id} data-number=${card.mana} data-power=${card.power} data-protection=${card.protection} id="card${id_cards}" draggable="true"><div class="mana_card">${card.mana}</div><div id="card_power${id_cards}" class="power_card">${card.power}</div></div>`;
+                ArrayCards.push(id_cards);
+                para.addEventListener('dragstart', dragStart);
+                para.addEventListener('dragend', dragEnd);
+                const timeOut = () => new Promise((res) => setTimeout(() => {
+                    document.getElementById("allCards").append(para);
+                    res()}, 500));
+                await timeOut();
+                let elemcard = document.getElementById(`card${id_cards}`);
+                elemcard.style.backgroundImage = `url(${card.url})`;
+                elemcard.style.backgroundSize = '145px';
+                numbCart++;
+                myCards++;
+            }
+            Update_info();
+            let modal = document.querySelector('.waiting_next_stroke');
+            let modal2 = document.querySelector('.timer_block');
+            modal.style.opacity = 1;
+            modal.style.visibility = 'visible';
+            let para2 = document.getElementById('stroke');
+            modal2.style.background = 'rgb(212, 80, 80)';
+            para2.innerHTML = 'Enemy walk';
+            socket.emit('next_stroke', {id: id_client});
+        }
+
+        const dragStart = function (event) {
+            mana_card = parseInt(event.target.dataset.number);
+            amount_power = parseInt(event.target.dataset.power);
+            id_card_in_arr = parseInt(event.target.dataset.idarr);
+            console.log(`id_card_in_arr: ${id_card_in_arr}`);
+            console.log("dragStart");
+            event.dataTransfer.setData('id', event.target.id);
+            setTimeout(() => {
+                this.classList.add('hide');
+            }, 0)
+        };
+        const dragEnd = function () {
+            console.log("dragEnd");
+            this.classList.remove('hide');
+        };
+        async function createElements(){
+            console.log("createElements");
+            await createElementsInside();
+            dragAndDrop();    
+        }     
+        const createElementsInside = async () => {
+            console.log("createElementsInside");
+            for (var i = 0; i < 5; i++) {
+                if(numbCart >= 5) {
+                    break;
+                }
+                console.log("Input createElmentsInside()");
+                // link1:
+                let rand_card_id = 0;
+                let ind = false;
+                while (true) {
+                    ind = false;
+                    rand_card_id = getRandomNum(1, 25);
+                    for (let j = 0; j < ArrayCards.length; j++) {
+                        if (rand_card_id == ArrayCards[j]) {
+                           ind = true;
+                           break;
+                        }
+                    }
+                    if (ind == false) {
+                        break;
+                    }
+                }
+                // let rand_card_id = getRandomNum(1, 25);
+                
+                let card = arr_cards[rand_card_id - 1];
+                // let rand_num = getRandomNum(1,10);
+                // let rand_num_power = getRandomNum(1, 10);
+                id_cards = rand_card_id;
+                const para = document.createElement("div");
+                para.innerHTML += `<div class="card" data-idarr=${rand_card_id} data-number=${card.mana} data-power=${card.power} data-protection=${card.protection} id="card${id_cards}" draggable="true"><div class="mana_card">${card.mana}</div><div id="card_power${id_cards}" class="power_card">${card.power}</div></div>`;
+                ArrayCards.push(rand_card_id);
+                const timeOut = () => new Promise((res) => setTimeout(() => {
+                    document.getElementById("allCards").append(para);
+                    res()}, 500));
+                await timeOut();
+                let elemcard = document.getElementById(`card${id_cards}`);
+                elemcard.style.backgroundImage = `url(${card.url})`;
+                elemcard.style.backgroundSize = '145px';
+                numbCart++;
+                myCards++;
+                indicator = true;
+                Update_info();
+                // console.log(`numbCart: ${numbCart}`);    
+            }
+        }
+        createElements();
+        async function err_mess() {
+            let err = document.getElementById('err_gameMess');
+            const timeOut1 = () => new Promise((res) => setTimeout(() => {  
+                err.innerHTML = `Not enough mana`;     
+                res()}, 500));
+            await timeOut1();
+            err.innerHTML = ``;
+        }
+        const dragAndDrop = async () => {
+            console.log("dragAndDrop");
+            const zone1 = document.querySelector('.block_fight');
+            const cards = document.querySelectorAll('.card');
+            const dragOver = function (event) {
+                console.log("dragOver");
+                event.preventDefault();
+            };
+            const dragDrop = async function (event) {
+                console.log("dragDrop");
+                // console.log(mana_card);
+                let err = document.getElementById('err_gameMess');
+                if (mana_card <= mana) {
+                    mana = mana - mana_card;
+                    Cards_drops++;
+                    let itemID = event.dataTransfer.getData('id');
+                    event.target.append(document.getElementById(itemID));  
+                    document.getElementById(itemID).setAttribute('draggable', false);
+                    
+                    document.getElementById(itemID).style.backgroundSize = '125px';
+                    console.log(`itemID: ${itemID}`);
+                    socket.emit('start_game', {id: id_client, id_c: id_card_in_arr});
+                    if (itemID === "card25" || itemID === "card26") {
+                        card_execution(itemID);
+                        setTimeout(function () {
+                            document.getElementById(itemID).remove();
+                        }, 2000);
+                        Cards_in_Out++;
+                    } else if (itemID === "card27" || itemID === "card28") {
+                        card_gain();
+                        setTimeout(function () {
+                            document.getElementById(itemID).remove();
+                        }, 2000);
+                        Cards_in_Out++;
+                    } else if (itemID === "card29" || itemID === "card30") {
+                        card_resurrection();
+                        setTimeout(function () {
+                            document.getElementById(itemID).remove();
+                        }, 2000);
+                        Cards_in_Out++;
+                    } else if (itemID === "card31" || itemID === "card32") {
+                        card_shield();
+                        ArrayCardsOnPlace.push(itemID);
+                        // setTimeout(function () {
+                        //     document.getElementById(`${itemID}`).remove();
+                        // }, 2000);
+                        // Cards_in_Out++;
+                    }
+                    else {
+                        ArrayCardsOnPlace.push(itemID);
+                        amount_cards_on_place++;
+                        console.log(`amount_card_on_Place: ${amount_cards_on_place}`);
+                        score_my = score_my + amount_power;
+                        if (amount_cards_on_place == 6) {
+                            Cards_in_Out = Cards_in_Out + amount_cards_on_place;
+                            amount_cards_on_place = 0;
+                            for (let i = 0; i < ArrayCardsOnPlace.length; i++) {
+                                ArrayCardInDecks.push(ArrayCardsOnPlace[i]);
+                                document.getElementById(ArrayCardsOnPlace[i]).remove();
+                            }
+                            Update_info();
+                            ArrayCardsOnPlace.splice(0, ArrayCardsOnPlace.length);
+                        }
+                    }
+                    // socket.emit("game", {id: id_client, id_c: id_card_in_arr});
+                    numbCart = numbCart - 1; 
+                    err.innerHTML = ``;
+                    Update_info();
+                    console.log('ArrayCardsOnPlace');
+                    console.log(ArrayCardsOnPlace);
+                }
+                else {
+                    console.log('err');
+                    err.innerHTML = `Not enough mana`; 
+                }
+            };
+            cards.forEach(card => {
+                card.addEventListener('dragstart', dragStart);
+                card.addEventListener('dragend', dragEnd);     
+            });
+            zone1.addEventListener('dragover', dragOver);
+            zone1.addEventListener('drop', dragDrop);
+        };
+    </script>
+</body>
+
+</html>

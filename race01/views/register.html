@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <title>Форма регистрации</title>
+</head>
+
+<body>
+    <form name="regForm" method="post">
+        <main>
+            <div class="register-form-container" style="display: block;">
+                <h1 class="form-title">Sign Up</h1>
+                <div class="form-fields">
+                    <div class="form-field">
+                        <input type="text" name="fullName" placeholder="Name" required>
+                    </div>
+                    <div class="form-field">
+                        <input type="text" name="login" placeholder="Login" required>
+                    </div>
+                    <div class="form-field">
+                        <input type="email" name="email" placeholder="Email" required>
+                    </div>
+                    <div class="form-field">
+                        <input type="password" name="pass" placeholder="Password" id="password" required>
+                    </div>
+                    <div class="form-field">
+                        <input type="password" name="confPass" placeholder="Confirm Password" id="confirm" required>
+                    </div>
+                    
+                </div>
+                <div class="form-buttons">
+                    <button id="regButton" class="button" type="submit">Sign Up</button><br>
+                    <a href="/login">Sign In</a>
+                </div>
+            </div>
+        </main>
+    </form>
+    <script>
+// //==========================================================================//
+//         document.querySelector("button").addEventListener('click', (e) => validate(e));
+//         function validate(e) {
+//             let password = document.querySelector('#password');
+//             let confirm = document.querySelector('#confirm');
+//             if(password.value !== confirm.value) {
+//                 confirm.insertAdjacentHTML("afterend", "<div class='message error' id='error'>Passwords does not match</div>");
+//                 setTimeout(() => {
+//                 document.querySelector('.error').outerHTML = '';
+//             },2000);
+//           }
+//         }
+// //==========================================================================//
+        let subButton = document.getElementById('regButton');
+
+        subButton.addEventListener('click', function (evt) {
+            evt.preventDefault();
+            
+            let regForm = document.forms['regForm'];
+            let login = regForm.elements['login'].value;
+            let pass = regForm.elements['pass'].value;
+            let fullName = regForm.elements['fullName'].value;
+            let email = regForm.elements['email'].value;
+            let check = regForm.elements['confPass'].value;
+    
+            if (pass === check) {
+                let user = JSON.stringify({
+                    login: login,
+                    pass: pass,
+                    fullName: fullName,
+                    email: email,
+                });
+            let request = new XMLHttpRequest();
+            
+            request.open('POST', '/reg', true);
+            request.setRequestHeader( 'Content-Type', 'application/json');
+        
+            request.addEventListener('load', function () {
+                let receivedUser = JSON.parse(request.response);
+                console.log(receivedUser.ans);
+                if (receivedUser.ans == 'OK') {
+                    alert("User saved");
+                    window.location.href = '/login';
+                }
+            });
+            request.send(user);
+            }
+        });
+      </script>
+</body>
+
+</html>

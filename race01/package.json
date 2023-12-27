@@ -1,0 +1,31 @@
+{
+  "name": "t03_files",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "serve": "nodemon index.js",
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "dzhyhun",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "bcryptjs": "^2.4.3",
+    "email-validator": "^2.0.4",
+    "express": "^4.18.2",
+    "fs": "^0.0.1-security",
+    "mysql2": "^2.3.3",
+    "nodemailer": "^6.7.3",
+    "path": "^0.12.7",
+    "shortid": "^2.2.16",
+    "socket.io": "^4.5.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.13",
+    "express-session": "^1.17.2",
+    "nodemon": "^2.0.15"
+  }
+}
