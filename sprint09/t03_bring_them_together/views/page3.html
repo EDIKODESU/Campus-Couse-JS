@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <link href="style_FogPass.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Title list</title>
+</head>
+
+<body>
+    <div class="container">
+        <form id="form">
+            <h1>Password recovery</h1>
+            <div class="input-container" id="usr">
+                <i class="fa fa-user icon" id="icon_login"></i>
+                <input class="input-field" id="mail" type="email" placeholder="Email" name="email">
+                <p class="ok" id="err_mail">&zwnj;</p>
+            </div>
+            <div id="condition_pass">&zwnj;</div> 
+            <button type="submit" class="btn">Send</button>
+            <div id="rem_pass"><a href="/">BACK</a></div>
+        </form> 
+    </div>    
+    <script>  
+    const form = document.getElementById('form');
+    form.addEventListener('submit', regSubmit);
+    async function regSubmit(event) {
+        event.preventDefault();
+        let serv = true;
+        let data = {};
+        data.mail = document.getElementById('mail').value;
+        if(data.mail.length <= 3){
+            serv = false;
+            document.getElementById("err_mail").textContent = 'Short login';  
+            document.getElementById("condition_pass").innerHTML = '&zwnj;';    
+        } else document.getElementById("err_mail").innerHTML = '&zwnj;';
+        if(!serv) return;
+        const res = await fetch('/mail', {method: 'post', body: JSON.stringify(data), headers: {'Content-Type' : 'application/json'}});
+        const resDATA = await res.json();
+        // console.log(resDATA.mail);
+        document.getElementById("condition_pass").innerHTML = resDATA.mail;    
+    }
+    </script>
+</body>
+
+</html>

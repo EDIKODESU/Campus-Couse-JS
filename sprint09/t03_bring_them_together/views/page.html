@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <link href="style.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Title list</title>
+</head>
+
+<body>
+        <form id="form">
+            <h1>Registration</h1>
+            <div class="input-container" id="usr">
+                <i class="fa fa-user icon"></i>
+                <input minlength="5" id="user" class="input-field" type="text" placeholder="Username">
+            </div>
+            <div class = 'err' id = 'login_exists'>&zwnj;</div>
+        
+            <div class="input-container" id="output_pass">
+                <i class="fa fa-key icon"></i>
+                <input minlength="4" id="pass" class="input-field" type="password" placeholder="Password">
+            </div>
+            <div class = 'err' id="ok_pass">&zwnj;</div>
+
+            <div class="input-container" id="output">
+                <i class="fa fa-key icon"></i>
+                <input minlength="4" id="conf_pass" class="input-field" type="password" placeholder="Confirm password">
+            </div>
+            <div class = 'err' id="ok_confpass">&zwnj;</div>
+            <div class="input-container" id="uname">
+                <i class="fa fa-user icon"></i>
+                <input id="username" class="input-field" type="text" placeholder="Your name">
+            </div>
+            <div class = 'err' id="name_ok">&zwnj;</div>
+            <div class="input-container" id="mail_id">
+                <i class="fa fa-envelope icon"></i>
+                <input class="input-field" id="mail" type="email" placeholder="Email" name="email">
+            </div> 
+            <div  class = 'err' id = 'email_exists'>&zwnj;</div>
+        
+            <button type="submit" class="btn">Register</button>
+            <div style="margin-top: 15px;" id="ref"><a href="/">BACK</a></div>
+        </form> 
+    <script>
+    const form = document.getElementById('form');
+        form.addEventListener('submit', regSubmit);
+        let dostup = true;
+        async function regSubmit(event) {
+            event.preventDefault();
+            let serv = true;
+            let data = {};
+            result = '';
+            data.passw = document.getElementById('pass').value;
+            data.conf_passw = document.getElementById('conf_pass').value
+            data.user = document.getElementById('user').value
+            data.username = document.getElementById('username').value
+            data.mail = document.getElementById('mail').value
+
+            if(data.conf_passw != data.passw || data.conf_passw.length == 0){
+                serv = false;
+                document.getElementById('ok_confpass').innerHTML = "does not match or not filled";      
+            } 
+            else{
+                document.getElementById('ok_confpass').innerHTML = '&zwnj;'; 
+            } 
+
+            if(data.username.length == 0){
+                serv = false;
+                document.getElementById("name_ok").innerHTML = "Field not filled";      
+            } 
+            else{
+                document.getElementById("name_ok").innerHTML = '&zwnj;'; 
+            } 
+
+            if(data.passw.length == 0){
+                serv = false;
+                document.getElementById("ok_pass").innerHTML = "Field not filled";      
+            } 
+            else{
+                document.getElementById("ok_pass").innerHTML = '&zwnj;'; 
+            } 
+
+            if(data.user.length == 0){
+                serv = false;
+                document.getElementById("login_exists").innerHTML = "Field not filled";      
+            } 
+            else{
+                if(dostup) document.getElementById("login_exists").innerHTML = '&zwnj;'; 
+            }
+
+            if(data.mail.length == 0){
+                serv = false;
+                document.getElementById("email_exists").innerHTML = "Field not filled";      
+            } 
+            else{
+               if(dostup) document.getElementById("email_exists").innerHTML = '&zwnj;'; 
+            }
+          
+            if(!serv) return;
+            const res = await fetch('/send', {method: 'post', body: JSON.stringify(data), headers: {'Content-Type' : 'application/json'}});
+            const resDATA = await res.json();
+            if(resDATA.login){
+                dostup = false;
+                document.getElementById("login_exists").innerHTML = resDATA.login;
+            }
+            else{
+                document.getElementById("login_exists").innerHTML = '&zwnj;';
+            }
+            if(resDATA.mail){
+                dostup = false;
+                document.getElementById("email_exists").innerHTML = resDATA.mail;
+            } 
+            else{
+                document.getElementById("email_exists").innerHTML = '&zwnj;';
+            } 
+            if(!resDATA.login && !resDATA.mail)
+            window.location.replace('/');
+        }
+    </script>
+</body>
+
+</html>

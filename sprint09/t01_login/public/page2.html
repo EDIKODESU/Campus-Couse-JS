@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <link href="style_login.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Title list</title>
+</head>
+
+<body>
+    <div class="container">
+        
+        <form id="form">
+            <h1>Login</h1>
+            <div class="input-container" id="usr">
+                <i class="fa fa-user icon" id="icon_login"></i>
+                <input id="login" class="input-field" type="text" placeholder="Username">
+                <p class="ok" id="ok_login">&zwnj;</p>
+            </div>
+        
+            <div class="input-container" id="pass">
+                <i class="fa fa-key icon"></i>
+                <input id="password" class="input-field" type="password" placeholder="Password">
+                <p class="ok" id="ok_password">&zwnj;</p>
+            </div>        
+            <div id="SignIn_err">&zwnj;</div> 
+            <button type="submit" class="btn">Sign in</button>
+            <a href="/register">Create account</a>
+            <div id="rem_pass"><a href="/" data-tooltip="Forgot password ?">???</a></div>
+        </form> 
+    </div>    
+    <script>
+        const form = document.getElementById('form');
+        form.addEventListener('submit', regSubmit);
+        async function regSubmit(event) {
+            event.preventDefault();
+            let serv = true;
+            let data = {};
+            data.login = document.getElementById('login').value;
+            data.password = document.getElementById('password').value;
+            if(data.login.length <= 3){
+                serv = false;
+                document.getElementById("ok_login").textContent = 'Short login';    
+            }
+            else document.getElementById("ok_login").innerHTML = '&zwnj;';
+
+            if(data.password.length <= 3 ){
+                serv = false;
+                document.getElementById("ok_password").textContent = 'Short password';   
+            }
+            else document.getElementById('ok_password').innerHTML = '&zwnj;';
+            console.log(serv);
+            if(!serv) return;
+            
+            const res = await fetch('/login', {method: 'post', body: JSON.stringify(data), headers: {'Content-Type' : 'application/json'}});
+            const resDATA = await res.json();
+            console.log(resDATA.login);
+            if(resDATA.login) document.getElementById("SignIn_err").textContent = resDATA.login; 
+            // else document.getElementById('SignIn_err').innerHTML = '&zwnj;';
+
+            if(resDATA.password) document.getElementById("SignIn_err").textContent = resDATA.password; 
+            if(!resDATA.login && !resDATA.password) document.getElementById('SignIn_err').innerHTML = '&zwnj;';
+
+            if(resDATA.token){
+                console.log(resDATA.token);
+                document.cookie = resDATA.token;
+            }
+            window.location.replace('/welcome');
+        }    
+    </script>
+</body>
+
+</html>

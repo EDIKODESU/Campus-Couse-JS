@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <link href="style.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Title list</title>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Registration</h1>
+        <form id="form">
+            <div class="input-container" id="usr">
+                <i class="fa fa-user icon"></i>
+                <input id="user" class="input-field" type="text" placeholder="Username">
+                <p class="ok" id="ok"></p>
+            </div>
+            <div id = 'login_exists'></div>
+        
+            <div class="input-container" id="output_pass">
+                <i class="fa fa-key icon"></i>
+                <input id="pass" class="input-field" type="password" placeholder="Password">
+                <p class="ok" id="ok_pass"></p>
+            </div>
+
+            <div class="input-container" id="output">
+                <i class="fa fa-key icon"></i>
+                <input id="conf_pass" class="input-field" type="password" placeholder="Confirm password">
+                <p class="ok" id="ok_confpass"></p>
+            </div>
+
+            <div class="input-container" id="uname">
+                <i class="fa fa-user icon"></i>
+                <input id="username" class="input-field" type="text" placeholder="Your name">
+                <p class="ok" id="name_ok"></p>
+            </div>
+
+            <div class="input-container" id="mail_id">
+                <i class="fa fa-envelope icon"></i>
+                <input class="input-field" id="mail" type="email" placeholder="Email" name="email">
+                <p class="ok" id="mail_ok"></p>
+            </div> 
+            <div id = 'email_exists'></div>
+        
+            <button type="submit" class="btn">Register</button>
+            <div id="ref"><a href="/">⇐</a></div>
+        </form> 
+    </div>    
+    <script>
+    const form = document.getElementById('form');
+        form.addEventListener('submit', regSubmit);
+        let dostup = false;
+        async function regSubmit(event) {
+            event.preventDefault();
+            let serv = true;
+            let data = {};
+            result = '';
+            data.passw = document.getElementById('pass').value;
+            data.conf_passw = document.getElementById('conf_pass').value
+            data.user = document.getElementById('user').value
+            data.username = document.getElementById('username').value
+            let err = document.getElementById('err');
+            let err_p = document.getElementById('err_p');
+            let err_cp = document.getElementById('err_cp');
+            let err_name = document.getElementById('err_name');
+            let err_mail = document.getElementById('err_mail');
+            data.mail = document.getElementById('mail').value
+            if(data.user.length <= 3){
+                serv = false;
+                if(!err){
+                    var el_user = document.createElement("div");
+                    el_user.innerHTML = "<p class = 'err' id = 'err'>Small str</p>";
+                    var div_user = document.getElementById("usr");
+                    div_user.parentNode.insertBefore(el_user, div_user.nextSibling);   
+                    document.getElementById('ok').innerHTML = '';
+                }     
+                else{
+                    document.getElementById('err').textContent = 'Small srt';
+                    dostup = false;
+                }
+            }
+            else{
+                if(err && !dostup){
+                    document.getElementById("err").remove(); 
+                }   
+            }
+            if(data.passw.length <= 3){
+                serv = false;
+                if(!err_p){
+                    var el = document.createElement("div");
+                    el.innerHTML = "<p class = 'err' id = 'err_p'>Small str</p>";
+                    var div = document.getElementById("output_pass");
+                    div.parentNode.insertBefore(el, div.nextSibling);  
+                    document.getElementById('ok_pass').innerHTML = '';
+                }     
+            }
+            else{
+                document.getElementById('ok_pass').innerHTML = '✓';
+                if(err_p){
+                    document.getElementById("err_p").remove(); 
+                }   
+            }
+            if(data.conf_passw != data.passw || data.conf_passw.length == 0){
+                serv = false;
+                if(!err_cp){
+                    var el = document.createElement("div");
+                    el.innerHTML = "<p class = 'err' id = 'err_cp'>does not match or not filled</p>";
+                    var div_p = document.getElementById("output");
+                    div_p.parentNode.insertBefore(el, div_p.nextSibling);  
+                    document.getElementById('ok_confpass').innerHTML = '';  
+                }     
+            } 
+            else{
+                document.getElementById('ok_confpass').innerHTML = '✓';
+                if(err_cp){
+                    document.getElementById("err_cp").remove(); 
+                }   
+            }    
+            if(data.username.length == 0){
+                serv = false;
+                if(!err_name){
+                    var el = document.createElement("div");
+                    el.innerHTML = "<p class = 'err' id = 'err_name'>not filled</p>";
+                    var div_p = document.getElementById("uname");
+                    div_p.parentNode.insertBefore(el, div_p.nextSibling);  
+                    document.getElementById('name_ok').innerHTML = '';  
+                }     
+            } 
+            else{
+                document.getElementById('name_ok').innerHTML = '✓';
+                if(err_name){
+                    document.getElementById("err_name").remove(); 
+                }   
+            }  
+            if(data.mail.length == 0){
+                serv = false;
+                if(!err_mail){
+                    var el_mail = document.createElement("div");
+                    el_mail.innerHTML = `<p class = 'err' id = 'err_mail'>not filled</p>`;
+                    var div_mail = document.getElementById("mail_id");
+                    div_mail.parentNode.insertBefore(el_mail, div_mail.nextSibling);   
+                    document.getElementById('mail_ok').innerHTML = '';
+                }  
+                else{
+                    document.getElementById('err_mail').textContent = 'not filled';
+                    dostup = false;
+                }
+            } 
+            else{
+                // document.getElementById('mail_ok').innerHTML = '✓';
+                if(err_mail && !dostup){
+                    document.getElementById("err_mail").remove(); 
+                }
+            } 
+            if(!serv) return;
+            const res = await fetch('/send', {method: 'post', body: JSON.stringify(data), headers: {'Content-Type' : 'application/json'}});
+            const resDATA = await res.json();
+            if(resDATA.login){
+                if(!err){
+                    dostup = true;
+                    var el_user = document.createElement("div");
+                    el_user.innerHTML = `<p class = 'err' id = 'err'>${resDATA.login}</p>`;
+                    var div_user = document.getElementById("usr");
+                    div_user.parentNode.insertBefore(el_user, div_user.nextSibling);   
+                    document.getElementById('ok').innerHTML = '';
+                }  
+            }
+            else{
+                document.getElementById('ok').innerHTML = '✓';
+                if(err){
+                    document.getElementById("err").remove(); 
+                }
+            }
+            if(resDATA.mail){
+                if(!err_mail){
+                    dostup = true;
+                    var el_mail = document.createElement("div");
+                    el_mail.innerHTML = `<p class = 'err' id = 'err_mail'>${resDATA.mail}</p>`;
+                    var div_mail = document.getElementById("mail_id");
+                    div_mail.parentNode.insertBefore(el_mail, div_mail.nextSibling);   
+                    document.getElementById('mail_ok').innerHTML = '';
+                }  
+            } 
+            else{
+                document.getElementById('mail_ok').innerHTML = '✓';
+                if(err_mail){
+                    document.getElementById("err_mail").remove(); 
+                }
+            } 
+            if(!resDATA.login && !resDATA.mail)
+            window.location.replace('/');
+        }
+    </script>
+</body>
+
+</html>

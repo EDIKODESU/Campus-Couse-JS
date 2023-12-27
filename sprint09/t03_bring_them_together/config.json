@@ -1,0 +1,7 @@
+{
+    "host": "localhost",
+    "database": "data_user",
+    "user": "ehlinystyi",
+    "password": "securepass",
+    "secret_key": "Baby-Bon"
+}

@@ -1,0 +1,118 @@
+.ok{
+    margin-bottom: 0;
+    color: rgb(214, 45, 26);
+}
+
+a, a:hover, a:focus, a:active {
+    text-decoration: none;
+    color: inherit;
+}
+
+form{
+    width:650px; 
+    /* height: 420px; */
+    /* height: 470px; */
+    text-align: center;
+    background: rgb(255, 253, 242); 
+    border-radius: 5px; 
+    border: 1px solid #dcdcdc;
+    margin: 10% auto; 
+    box-shadow: 10px 5px 5px rgb(112, 126, 107);
+    padding-bottom: 20px;
+}
+/* * {box-sizing: border-box;} */
+
+body{
+    background-color: #a3dd9e;
+    font-family: 'Lato', sans-serif;
+    color: #4A4A4A;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    /* overflow: hidden; */
+    /* margin: 0; */
+    padding: 0;
+}
+
+form {
+    width: 420px;
+    position: relative;
+  }
+
+  .err{
+    color: rgb(255, 78, 78);
+}
+
+  form input {
+    font-family: inherit;
+    margin: auto;
+    padding: auto;
+    width: 75%;
+    outline: none;
+    background-color: #fff;
+    border-radius: 4px;
+    border: none;
+    display: block;
+    padding: 0.9rem 0.7rem;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+    font-size: 17px;
+    color: #4A4A4A;
+    text-indent: 40px;
+  }
+
+  .fa-user:before {
+    content: "\f007";
+    position: relative;
+    top: 54.9px;
+    right: 146px;
+    /* top: 54.1px;
+    right: 132px; */
+}
+/* .fa-key:before {
+    content: "\f084";
+    position: relative;
+    top: 54.9px;
+    right: 146px;
+} */
+  
+.icon {
+    min-width: 50px;
+    min-height: 39px;
+    /* text-align: center; */
+}
+
+h1{
+    text-align: center;
+    margin-bottom: 13px;
+    margin-left: 6px;
+  }
+
+p {margin: 0;}
+
+#err_mail{
+    margin-top: 20px;
+}
+
+.btn {
+    /* background-color:rgb(90, 181, 72); */
+    background-color:rgb(90, 181, 72);
+    text-align: center;
+    color: white;
+    padding: 15px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 0.5px;
+    width: 50%;
+    opacity: 0.9;
+    margin-top: 6mm;
+}
+
+.btn:hover {
+  opacity: 1;
+}
+
+#rem_pass{
+    margin-top: 50px;
+    margin-right: 340px;
+}

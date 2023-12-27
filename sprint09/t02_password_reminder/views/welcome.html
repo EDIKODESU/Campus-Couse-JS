@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <link href="style_welcome.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Title list</title>
+</head>
+
+<body>
+    <div class="container">
+        
+        <form id="form">
+            <h1>Welcome !</h1>
+            <div id="login">&zwnj;</div> 
+            <div id="info">&zwnj;</div> 
+            <!-- <div id="email">&zwnj;</div> 
+            <div id="role">&zwnj;</div>  -->
+            <a href="/clearData"><button type="button" class="btn">Logout</button></a>
+        </form> 
+    </div>    
+    <script>
+        async function GetData(){
+            const res = await fetch('/data_user', {method: 'post', headers: {'Content-Type' : 'application/json'}});
+            const resDATA = await res.json();
+            console.log(resDATA);
+            let str = '';
+            let str_log = '';
+            for(let key in resDATA){
+                if(key == 'login'){
+                    str_log += key;
+                    str_log += ' : ';
+                    str_log += resDATA[key];
+                    document.getElementById('login').innerHTML = str_log;
+                }
+                else {
+                    str += key;
+                    str += ' : ';
+                    str += resDATA[key];
+                    str += '<br>';
+                    document.getElementById('info').innerHTML = str;
+                }     
+            }
+        }     
+        GetData();
+    </script>
+</body>
+
+</html>
