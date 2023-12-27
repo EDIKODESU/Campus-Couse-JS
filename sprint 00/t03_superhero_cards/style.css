@@ -1,0 +1,69 @@
+.class {
+    font-family: Verdana, serif;
+    display: flex;
+    flex-wrap: wrap;
+    float: left;
+}
+
+.hero {
+    width: 270px;
+    height: 140px;
+    border-radius: 5px;
+    padding: 10px;
+    margin-left: 40px;
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+
+.t2 {
+    color: rgb(255, 255, 255, 0.5);
+    margin: 0;
+    font-size: 9px;
+    text-align: right;
+    font-weight: bold;
+}
+
+.t1 {
+    font-size: 12px;
+    text-align: right;
+    font-weight: bold;
+    margin: 0;
+    color: white;
+}
+
+img {
+    height: 182px;
+    position: absolute;
+}
+
+#captain_img {
+    margin-top: -32px;
+}
+
+#stark_img {
+    margin-top: -32px;
+}
+
+#widow_img {
+    margin-top: -30px;
+}
+
+#spider_img {
+    margin-top: -10;
+}
+
+#captain {
+    background: linear-gradient(#4568DC, #B06AB3);
+}
+
+#iron_man {
+    background: linear-gradient(#e52d27, #b31217);
+}
+
+#bw {
+    background: linear-gradient(to right, #000, #61045F);
+}
+
+#spider {
+    background: linear-gradient(#e52d27, #000);
+}

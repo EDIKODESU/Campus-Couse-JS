@@ -1,0 +1,39 @@
+table {
+    border-spacing: 0px;
+}
+td{
+    text-align: center;
+    padding: 10px;
+    border: 1px solid rgb(221, 221, 221);
+}
+
+#titulka {
+    background-color: black;
+    color: white;
+}
+#soul {
+    background-color: rgb(204, 148, 77);
+}
+#time {
+    background-color: rgb(55, 125, 34);
+}
+
+#space {
+    background-color: rgb(35, 86, 141);
+}
+#mind {
+    background-color: rgb(255, 254, 85);
+}
+#reality {
+    background-color: rgb(178, 56, 53);
+}
+#power {
+    background-color: rgb(127, 118, 178);
+}
+
+img {
+    margin: 8px;
+    width: 120px;
+    height: 120px;
+    border-radius: 20px;
+}

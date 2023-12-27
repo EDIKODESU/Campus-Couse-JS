@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <link href="style.css" rel="stylesheet" type="text/css">
+    <title>Title list</title>
+</head>
+
+<body>
+    <h1>New Avenger application</h1>
+    <div class="container" id="result"></div>
+    <form>
+        <fieldset>
+            <legend>About candidate</legend>
+            <p>
+                <label>Name
+                    <input id="t" name="name" type="text" placeholder="Tell your name" autofocus>
+                </label>
+
+                <label>E-mail
+                    <input id="t1" name="e-mail" type="text" placeholder="Tell your e-mail">
+                </label>
+
+                <label>Age
+                    <input id="t2" name="age" type="number">
+                </label>
+                <br>
+                <br>
+
+                <label>About
+                    <textarea cols="70" rows="5" maxlength="500" name="description"
+                        placeholder="Information about the superhero, max 500 symbols"></textarea>
+                </label>
+                <br>
+                <br>
+
+                <label>Photo:
+                    <input type="file" name="photo" multiple>
+                </label>
+                <br>
+            </p>
+        </fieldset>
+        <button type="reset">Clear</button>
+        <button type="submit">Send</button>
+    </form>
+    <script src="script.js"></script>
+</body>
+
+</html>
